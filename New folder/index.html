@@ -39,7 +39,7 @@
 
         let isBgCaptured = false;
         let triggerCaptureFrame = false;
-        let isExposureLocked = false; // Biến theo dõi trạng thái khóa sáng
+        let isExposureLocked = false;
 
         function resizeCanvas() {
             const w = window.innerWidth;
@@ -54,7 +54,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // --- HÀM KHÓA SÁNG (EXPOSURE LOCK) ---
         async function lockCameraExposure() {
             if (!videoElement.srcObject) return;
             
@@ -62,20 +61,17 @@
             const capabilities = track.getCapabilities();
             const settings = track.getSettings();
 
-            // Kiểm tra xem camera có hỗ trợ chỉnh exposure không
+            // Kiểm tra hỗ trợ chỉnh exposure
             if (!capabilities.exposureMode) {
                 console.warn("Camera này không hỗ trợ khóa sáng (Exposure Mode).");
                 return;
             }
 
             try {
-                // Tạo constraints để khóa các thông số ở giá trị hiện tại
                 const constraints = {
                     advanced: [{
-                        // Chuyển sang chế độ thủ công
                         exposureMode: 'manual', 
                         whiteBalanceMode: 'manual',
-                        // Giữ nguyên các thông số hiện tại
                         exposureTime: settings.exposureTime,
                         colorTemperature: settings.colorTemperature,
                         iso: settings.iso
@@ -93,8 +89,6 @@
         window.addEventListener('keydown', async (e) => {
             if (e.code === 'Space') {
                 triggerCaptureFrame = true;
-                
-                // Kích hoạt khóa sáng nếu chưa khóa
                 if (!isExposureLocked) {
                     await lockCameraExposure();
                 }
@@ -187,12 +181,12 @@
             ctx.shadowBlur = 40; ctx.shadowColor = getBlue(1.0); 
             ctx.fill(); ctx.shadowBlur = 0;
         }
-
+        // choáng
         function onResults(results) {
             const w = canvasElement.width;
             const h = canvasElement.height;
             const now = Date.now();
-
+            // tàng hình
             if (triggerCaptureFrame) {
                 bgCtx.drawImage(results.image, 0, 0, w, h);
                 isBgCaptured = true;
@@ -314,7 +308,7 @@
                 flashIntensity -= 0.04; 
             }
         }
-
+        //API 
         const holistic = new Holistic({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
         }});
